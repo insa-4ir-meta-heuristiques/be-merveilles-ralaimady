@@ -50,4 +50,41 @@ public class GreedySolverTests {
         assert schedule.makespan() == 54 : "The greedy solver LRPT should have produced a makespan of 11 for this instance.";
     }
 
+    @Test
+    public void testGreedySolverEST_SPT() throws IOException {
+        Instance instance = Instance.fromFile(Paths.get("instances/aaa3"));
+
+        Solver solver = new GreedySolver(GreedySolver.Priority.EST_SPT);
+        Optional<Schedule> result = solver.solve(instance, System.currentTimeMillis() + 10);
+
+        assert result.isPresent() : "The solver did not find a solution";
+        // extract the schedule associated to the solution
+        Schedule schedule = result.get();
+        assert  schedule.isValid() : "The solution is not valid";
+
+        System.out.println("Makespan: " + schedule.makespan());
+        System.out.println("Schedule: \n" + schedule);
+        System.out.println(schedule.asciiGantt());
+
+        assert schedule.makespan() == 48 : "The greedy solver SPT should have produced a makespan of 48 for this instance.";
+    }
+
+    @Test
+    public void testGreedySolverEST_LRPT() throws IOException {
+        Instance instance = Instance.fromFile(Paths.get("instances/aaa3"));
+
+        Solver solver = new GreedySolver(GreedySolver.Priority.EST_LRPT);
+        Optional<Schedule> result = solver.solve(instance, System.currentTimeMillis() + 10);
+
+        assert result.isPresent() : "The solver did not find a solution";
+        // extract the schedule associated to the solution
+        Schedule schedule = result.get();
+        assert  schedule.isValid() : "The solution is not valid";
+
+        System.out.println("Makespan: " + schedule.makespan());
+        System.out.println("Schedule: \n" + schedule);
+        System.out.println(schedule.asciiGantt());
+
+        assert schedule.makespan() == 56 : "The greedy solver SPT should have produced a makespan of 56 for this instance.";
+    }
 }

@@ -67,6 +67,7 @@ public final class ResourceOrder extends Encoding {
         if(instance.machine(task) != machine) {
             throw new RuntimeException("Task " + task + " cannot be scheduled on machine "+machine);
         }
+        System.out.println("Machine : " + machine + " - Next Free Slot : " + nextFreeSlot[machine]);
         tasksByMachine[machine][nextFreeSlot[machine]] = task;
         nextFreeSlot[machine] += 1;
     }
