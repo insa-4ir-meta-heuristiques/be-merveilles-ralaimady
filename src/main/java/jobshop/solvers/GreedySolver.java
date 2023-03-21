@@ -49,7 +49,18 @@ public class GreedySolver implements Solver {
 
 
         while (!taskList.isEmpty()){
-            Task min = taskList.pollFirst();
+
+            Task min;
+
+            if(Math.random() > 0.95){
+                Task[] array = new Task [taskList.size()];
+                array = taskList.toArray(array);
+                min = array[(int) (Math.random() * (taskList.size() - 1))];
+            }else{
+                min = taskList.first();
+            }
+
+            taskList.remove(min);
 
             if(this.priority == Priority.EST_SPT){
                 System.out.println("Machine Tab : " + Arrays.toString(est_spt.MachineTab));
