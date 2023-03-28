@@ -22,6 +22,8 @@ public interface Solver {
     static Solver getSolver(String name) {
         switch (name) {
             case "basic": return new BasicSolver();
+            case "tabou_est_spt": return new TabouSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_SPT), 20);
+            case "tabou_est_lrpt": return new TabouSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_LRPT), 20);
             case "descent_est_spt": return new DescentSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_SPT));
             case "descent_est_lrpt": return new DescentSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_LRPT));
             case "spt": return new GreedySolver(GreedySolver.Priority.SPT);
