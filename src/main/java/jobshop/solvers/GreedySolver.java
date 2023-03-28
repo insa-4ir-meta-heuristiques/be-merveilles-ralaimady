@@ -44,38 +44,41 @@ public class GreedySolver implements Solver {
         //initialisation de taskList avec les premières tâches de chaque job
         for (int i=0; i< instance.numJobs; i++){
             taskList.add(new Task(i, 0));
-            System.out.println(taskList.size());
+            // System.out.println(taskList.size());
         }
 
+        // A mofidier selon le niveau de Random
+        int rand = 1;
 
         while (!taskList.isEmpty()){
 
             Task min;
 
-            if(Math.random() > 0.95){
+            if(Math.random() > rand){
                 Task[] array = new Task [taskList.size()];
                 array = taskList.toArray(array);
                 min = array[(int) (Math.random() * (taskList.size() - 1))];
+                taskList.remove(min);
             }else{
-                min = taskList.first();
+                min = taskList.pollFirst();
             }
 
-            taskList.remove(min);
+
 
             if(this.priority == Priority.EST_SPT){
-                System.out.println("Machine Tab : " + Arrays.toString(est_spt.MachineTab));
-                System.out.println("JobTab + " + Arrays.toString(est_spt.JobTab));
+                // System.out.println("Machine Tab : " + Arrays.toString(est_spt.MachineTab));
+                // System.out.println("JobTab + " + Arrays.toString(est_spt.JobTab));
                 int max = Math.max(est_spt.MachineTab[instance.machine(min)], est_spt.JobTab[min.job]);
                 est_spt.MachineTab[instance.machine(min)] = max + instance.duration(min);
                 est_spt.JobTab[min.job] = max + instance.duration(min);
             }else if(this.priority == Priority.EST_LRPT){
-                System.out.println("Machine Tab : " + Arrays.toString(est_lrpt.MachineTab));
-                System.out.println("JobTab + " + Arrays.toString(est_lrpt.JobTab));
+                // System.out.println("Machine Tab : " + Arrays.toString(est_lrpt.MachineTab));
+                // System.out.println("JobTab + " + Arrays.toString(est_lrpt.JobTab));
                 int max = Math.max(est_lrpt.MachineTab[instance.machine(min)], est_lrpt.JobTab[min.job]);
                 est_lrpt.MachineTab[instance.machine(min)] = max + instance.duration(min);
                 est_lrpt.JobTab[min.job] = max + instance.duration(min);
             }
-            System.out.println(" Job : " + min.job + " - Task : " + min.task + " - Machine : " + instance.machine(min));
+            // System.out.println(" Job : " + min.job + " - Task : " + min.task + " - Machine : " + instance.machine(min));
             solution.addTaskToMachine(instance.machine(min), min);
             if(min.task < instance.numTasks - 1) {
                 if(this.priority == Priority.EST_SPT){
@@ -91,7 +94,7 @@ public class GreedySolver implements Solver {
                 }
                 taskList.add(new Task(min.job, (min.task + 1)));
             }
-            System.out.println("-----------------------------------------------------------------");
+            // System.out.println("-----------------------------------------------------------------");
         }
         return solution.toSchedule();
 
@@ -104,7 +107,14 @@ public class GreedySolver implements Solver {
             this.instance = instance;
         }
         public int compare(Task one, Task two){
-            return Integer.compare(instance.duration(one), instance.duration(two));
+            int result = Integer.compare(instance.duration(one), instance.duration(two));
+            if(result == 0){
+                result = Integer.compare(one.task, two.task);
+                if(result == 0){
+                    result = Integer.compare(one.job, two.job);
+                }
+            }
+            return result;
         }
     }
 
@@ -154,6 +164,12 @@ public class GreedySolver implements Solver {
 
             if ( valOne == valTwo ) {
                 result = Integer.compare(instance.duration(one), instance.duration(two));
+                if(result == 0){
+                    result = Integer.compare(one.task, two.task);
+                    if(result == 0){
+                        result = Integer.compare(one.job, two.job);
+                    }
+                }
             } else{
                 result = Integer.compare(valOne, valTwo);
             }

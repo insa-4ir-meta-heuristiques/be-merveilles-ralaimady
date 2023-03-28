@@ -27,21 +27,31 @@ public class DescentSolver implements Solver {
 
     @Override
     public Optional<Schedule> solve(Instance instance, long deadline) {
-        Optional<Schedule> schedule = baseSolver.solve(instance,deadline);
-        ResourceOrder initial = new ResourceOrder(schedule.get());
-        List<ResourceOrder> neighborsList = neighborhood.generateNeighbors(initial);
-        Optional<Schedule> solution = schedule;
-        int min = schedule.get().makespan();
 
-        for (ResourceOrder temp: neighborsList) {
-            Optional<Schedule> tmpS = temp.toSchedule();
-            if(tmpS.isPresent() && tmpS.get().isValid()){ // vérifie la validité du ressource order
-                if(tmpS.get().makespan()<min){ //vérifie si le makespan est meilleur
-                    solution = tmpS;
-                    min = tmpS.get().makespan();
+        Optional<Schedule> schedule = baseSolver.solve(instance,deadline);
+        Optional<Schedule> solution = schedule;
+        do {
+            ResourceOrder initial = new ResourceOrder(schedule.get());
+            List<ResourceOrder> neighborsList = neighborhood.generateNeighbors(initial);
+            int min = schedule.get().makespan();
+
+            for (ResourceOrder temp: neighborsList) {
+                Optional<Schedule> tmpS = temp.toSchedule();
+                if(tmpS.isPresent() && tmpS.get().isValid()){ // vérifie la validité du ressource order
+                    if(tmpS.get().makespan()<min){ //vérifie si le makespan est meilleur
+                        solution = tmpS;
+                        min = tmpS.get().makespan();
+                    }
                 }
             }
-        }
+            if (solution.get().makespan()<schedule.get().makespan()){
+                schedule = solution;
+            }else if(solution.get().makespan() == schedule.get().makespan()){
+                break;
+            }
+
+        }while(schedule == solution);
+
         return solution;
     }
 

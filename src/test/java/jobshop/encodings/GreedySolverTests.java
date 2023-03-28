@@ -14,7 +14,7 @@ public class GreedySolverTests {
 
     @Test
     public void testGreedySolverSPT() throws IOException {
-        Instance instance = Instance.fromFile(Paths.get("instances/aaa3"));
+        Instance instance = Instance.fromFile(Paths.get("instances/la01"));
 
         Solver solver = new GreedySolver(GreedySolver.Priority.SPT);
         Optional<Schedule> result = solver.solve(instance, System.currentTimeMillis() + 10);
@@ -28,7 +28,7 @@ public class GreedySolverTests {
         System.out.println("Schedule: \n" + schedule);
         System.out.println(schedule.asciiGantt());
 
-        assert schedule.makespan() == 53 : "The greedy solver SPT should have produced a makespan of 16 for this instance.";
+        assert schedule.makespan() == 53 : "The greedy solver SPT should have produced a makespan of 53 for this instance.";
     }
 
     @Test
