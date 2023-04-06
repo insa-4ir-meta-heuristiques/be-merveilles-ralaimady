@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
 /** Implementation of the Nowicki and Smutnicki neighborhood.
  *
  * It works on the ResourceOrder encoding by generating two neighbors for each block
@@ -30,6 +31,24 @@ public class Nowicki extends Neighborhood {
      * Represent the task sequence : [(0,2) (2,1)]
      *
      * */
+
+    public class PairTask{
+        public Task firstTask;
+        public Task secondTask;
+        public PairTask(Task firstTask, Task secondTask){
+            this.firstTask = firstTask;
+            this.secondTask = secondTask;
+        }
+    }
+    public class Pair{
+        public ResourceOrder resourceOrder;
+        public Swap swap;
+        public Pair(ResourceOrder order, Swap swap){
+            this.resourceOrder = order;
+            this.swap = swap;
+        }
+    }
+
     public static class Block {
         /** machine on which the block is identified */
         public final int machine;
@@ -84,6 +103,11 @@ public class Nowicki extends Neighborhood {
             }
         }
 
+        /**function that inverse Swap */
+        public Swap inverseSwap(){
+            return new Swap( machine , t2 , t1 );
+        }
+
 
         /** Creates a new ResourceOrder order that is the result of performing the swap in the original ResourceOrder.
          *  The original ResourceOrder MUST NOT be modified by this operation.
@@ -113,6 +137,12 @@ public class Nowicki extends Neighborhood {
     public List<ResourceOrder> generateNeighbors(ResourceOrder current) {
         // convert the list of swaps into a list of neighbors (function programming FTW)
         return allSwaps(current).stream().map(swap -> swap.generateFrom(current)).collect(Collectors.toList());
+
+    }
+
+    public List<Pair> generateNeighborsSwap(ResourceOrder current) {
+        // convert the list of swaps into a list of neighbors (function programming FTW)
+        return allSwaps(current).stream().map(swap -> new Pair(swap.generateFrom(current), swap)).collect(Collectors.toList());
 
     }
 
