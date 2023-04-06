@@ -2,6 +2,7 @@ package jobshop.solvers;
 
 import jobshop.Instance;
 import jobshop.encodings.Schedule;
+import jobshop.solvers.neighborhood.Nowicki;
 
 import java.util.Optional;
 
@@ -21,7 +22,14 @@ public interface Solver {
     static Solver getSolver(String name) {
         switch (name) {
             case "basic": return new BasicSolver();
+            case "tabou_est_spt": return new TabouSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_SPT), 2000,100);
+            case "tabou_est_lrpt": return new TabouSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_LRPT), 2000, 100);
+            case "descent_est_spt": return new DescentSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_SPT));
+            case "descent_est_lrpt": return new DescentSolver(new Nowicki(), new GreedySolver(GreedySolver.Priority.EST_LRPT));
             case "spt": return new GreedySolver(GreedySolver.Priority.SPT);
+            case "lrpt": return new GreedySolver(GreedySolver.Priority.LRPT);
+            case "est_spt": return new GreedySolver(GreedySolver.Priority.EST_SPT);
+            case "est_lrpt": return new GreedySolver(GreedySolver.Priority.EST_LRPT);
             // TODO: add new solvers
             default: throw new RuntimeException("Unknown solver: "+ name);
         }

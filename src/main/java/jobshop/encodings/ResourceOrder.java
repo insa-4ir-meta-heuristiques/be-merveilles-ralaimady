@@ -4,6 +4,7 @@ import jobshop.Instance;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -189,5 +190,18 @@ public final class ResourceOrder extends Encoding {
         int result = Arrays.hashCode(tasksByMachine);
         result = 31 * result + Arrays.hashCode(nextFreeSlot);
         return result;
+    }
+
+    public int getIndexOrder(int machine, Task task){
+        Task[] t = tasksByMachine[machine];
+        int position = 0;
+        while (position <= t.length){
+            if (t[position].equals(task)){
+                return position;
+            }else {
+                position++;
+            }
+        }
+        return -1;
     }
 }
