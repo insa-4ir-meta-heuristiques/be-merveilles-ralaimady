@@ -49,22 +49,28 @@ public class TabouSolver implements Solver {
 
             for (Nowicki.Pair temp: neighborsList){
                 Optional<Schedule> tmpS = temp.resourceOrder.toSchedule();
-                if(tmpS.isPresent() && tmpS.get().isValid() && !listTasksTabou.contains(temp.pairTask)){ // vérifie la validité du ressource order
-                    if(tmpS.get().makespan()<min){ //vérifie si le makespan est meilleur
+                if(tmpS.isPresent() && tmpS.get().isValid()){ // vérifie la validité du ressource order
+                    if(tmpS.get().makespan()<min  && !listTasksTabou.contains(temp.pairTask)) {
                         solution = tmpS;
                         min = tmpS.get().makespan();
                         bestPairTasks = temp.pairTask;
                     }
+                    /*else if(tmpS.get().makespan()<optimal.get().makespan()){ //version 3
+                        solution = tmpS;
+                        min = tmpS.get().makespan();
+                        bestPairTasks = temp.pairTask;
+                    }*/
                 }
             }
+
             if(bestPairTasks != null) {
-                bestPairTasks.inverseTask();
-                listTasksTabou.offerFirst(bestPairTasks);
+                listTasksTabou.offerFirst(bestPairTasks.inverseTask());
                 if (listTasksTabou.size()==dureeTabou) listTasksTabou.pollLast();
             }
 
             if (solution.get().makespan()<optimal.get().makespan()){
                 optimal = solution;
+
             }
              schedule = solution;
             currentIter++;

@@ -34,18 +34,16 @@ public class Nowicki extends Neighborhood {
      */
 
     public class PairTask {
-        public Task firstTask;
-        public Task secondTask;
+        final public Task firstTask;
+        final public Task secondTask;
 
         public PairTask(Task firstTask, Task secondTask) {
             this.firstTask = firstTask;
             this.secondTask = secondTask;
         }
 
-        public void inverseTask(){
-            Task temp = firstTask;
-            firstTask = secondTask;
-            secondTask = firstTask;
+        public PairTask inverseTask(){
+            return new PairTask(secondTask, firstTask);
         }
 
         @Override
@@ -54,6 +52,11 @@ public class Nowicki extends Neighborhood {
             if (o == null || getClass() != o.getClass()) return false;
             PairTask pairTask1 = (PairTask) o;
             return firstTask == pairTask1.firstTask && secondTask == pairTask1.secondTask;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(firstTask, secondTask);
         }
     }
 
