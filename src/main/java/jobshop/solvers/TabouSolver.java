@@ -33,31 +33,34 @@ public class TabouSolver implements Solver {
 
         Optional<Schedule> schedule = baseSolver.solve(instance,deadline);
         Optional<Schedule> solution = schedule;
-        Nowicki.Swap bestSwap = null;
+        //Nowicki.Swap bestSwap = null;
+        Nowicki.PairTask bestPairTasks = null;
         Optional<Schedule> optimal = schedule;
         int currentIter = 0;
 
-        Deque<Nowicki.Swap> listSwapTabou = new ArrayDeque<>();
+        //Deque<Nowicki.Swap> listSwapTabou = new ArrayDeque<>();
+        Deque<Nowicki.PairTask> listTasksTabou = new ArrayDeque<>();
 
         do {
             ResourceOrder initial = new ResourceOrder(schedule.get());
             //List<ResourceOrder> neighborsList = neighborhood.generateNeighbors(initial);
-            List<Nowicki.Pair> neighborsList = neighborhood.generateNeighborsSwap(initial);
+            List<Nowicki.Pair> neighborsList = neighborhood.generateNeighborsPairTasks(initial);
             int min = Integer.MAX_VALUE;
 
             for (Nowicki.Pair temp: neighborsList){
                 Optional<Schedule> tmpS = temp.resourceOrder.toSchedule();
-                if(tmpS.isPresent() && tmpS.get().isValid() && !listSwapTabou.contains(temp.swap)){ // vérifie la validité du ressource order
+                if(tmpS.isPresent() && tmpS.get().isValid() && !listTasksTabou.contains(temp.pairTask)){ // vérifie la validité du ressource order
                     if(tmpS.get().makespan()<min){ //vérifie si le makespan est meilleur
                         solution = tmpS;
                         min = tmpS.get().makespan();
-                        bestSwap = temp.swap;
+                        bestPairTasks = temp.pairTask;
                     }
                 }
             }
-            if(bestSwap != null) {
-                listSwapTabou.offerFirst(bestSwap.inverseSwap());
-                if (listSwapTabou.size()==dureeTabou) listSwapTabou.pollLast();
+            if(bestPairTasks != null) {
+                bestPairTasks.inverseTask();
+                listTasksTabou.offerFirst(bestPairTasks);
+                if (listTasksTabou.size()==dureeTabou) listTasksTabou.pollLast();
             }
 
             if (solution.get().makespan()<optimal.get().makespan()){
